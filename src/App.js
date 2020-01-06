@@ -80,6 +80,49 @@ isCardMatch = (card1, card2, card1Id, card2Id) => {
   }
 };
 
+
+//  method basically resets the game’s state.
+restartGame = () => {
+  this.setState({
+    isFlipped: Array(16).fill(false),
+    shuffledCard: App.duplicateCard().sort(() => Math.random() - 0.5),
+    clickCount: 1,
+    prevSelectedCard: -1,
+    prevCardId: -1
+  });
+};
+
+  // method checks if the game is over.
+  isGameOver = () => {
+    return this.state.isFlipped.every((element, index, array) => element !== false);
+  };
+
+  render() {
+    return (
+     <div>
+       <Header restartGame={this.restartGame} />
+       { this.isGameOver() ? <GameOver restartGame={this.restartGame} /> :
+       <div className="grid-container">
+          {
+            this.state.shuffledCard.map((cardNumber, index) => 
+              <Card
+                key={index} 
+                id={index} 
+                cardNumber={cardNumber} 
+                isFlipped={this.state.isFlipped[index]} 
+                handleClick={this.handleClick}     
+              />
+            )
+          }
+        </div>
+       }
+     </div>
+    );
+  }
 }
 
 export default App;
+
+// The Card.jsx, GameOver.jsx and Header.jsx are all presentational components. 
+// They do not contain any application logic rather they contain props passed down 
+// to them from the App.js parent component
